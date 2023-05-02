@@ -1,5 +1,5 @@
+module Tarefa1 where
 import System.IO
-import Data.List (nub)
 
 type UC = String
 type Aluno = String
@@ -11,7 +11,7 @@ leInscricoes path = do
   conteudo <- readFile path
   let inscricoes = map (paraInscricao . words) (lines conteudo)
   return inscricoes
-  where
+  where 
     paraInscricao [uc, aluno] = (uc, aluno)
     paraInscricao _ = error "Formato inválido de inscrição"
 
@@ -31,32 +31,22 @@ leAlunos path = do
 
 -- Função que filtra as inscrições para obter apenas aquelas referentes a uma determinada UC
 inscricoesPorUC :: UC -> [Inscricao] -> [Aluno]
-inscricoesPorUC uc inscricoes = nub [aluno | (uc', aluno) <- inscricoes, uc' == uc]
+inscricoesPorUC uc inscricoes = [aluno | (uc', aluno) <- inscricoes, uc' == uc]
 
--- Função que filtra as inscrições para obter apenas aquelas referentes a um determinado aluno
-inscricoesPorAluno :: Aluno -> [Inscricao] -> [UC]
-inscricoesPorAluno aluno inscricoes = nub [uc | (uc, aluno') <- inscricoes, aluno' == aluno]
+-- Função que imprime na tela os alunos inscritos em cada UC
+imprimeInscricoes :: [UC] -> [Aluno] -> [Inscricao] -> IO ()
+imprimeInscricoes ucs alunos inscricoes = mapM_ imprimeUC ucs
+  where
+    imprimeUC uc = do
+      let alunosUC = inscricoesPorUC uc inscricoes
+      putStrLn uc
+      mapM_ putStrLn alunosUC
+      putStrLn ""
 
--- Função que imprime na tela os alunos inscritos em uma determinada UC
-imprimeAlunos :: UC -> [UC] -> [Aluno] -> [Inscricao] -> IO ()
-imprimeAlunos uc ucs alunos inscricoes = do
-  let alunosUC = inscricoesPorUC uc inscricoes
-  putStrLn ("Alunos inscritos em " ++ uc ++ ":")
-  mapM_ putStrLn alunosUC
-  putStrLn ""
-
--- Função que imprime na tela as UCs às quais um determinado aluno está inscrito
-imprimeUCs :: Aluno -> [UC] -> [Inscricao] -> IO ()
-imprimeUCs aluno ucs inscricoes = do
-  let ucsAluno = inscricoesPorAluno aluno inscricoes
-  putStrLn ("UCs às quais " ++ aluno ++ " está inscrito:")
-  mapM_ putStrLn ucsAluno
-  putStrLn ""
-
--- Função principal que lê os arquivos, lê a UC escolhida pelo utilizador e imprime as listagens filtradas
+-- Função principal que lê os arquivos e imprime as inscrições
 main :: IO ()
 main = do
   ucs <- leUCs "ucs.txt"
   alunos <- leAlunos "listaalunos.txt"
   inscricoes <- leInscricoes "inscricoes.txt"
-  
+  imprimeInscricoes ucs alunos inscricoes
