@@ -26,7 +26,7 @@ lerAlunos = do
     let alunos = lines conteudo
     return alunos
 
-inscricoesPorUC :: Eq a1 => a1 -> [(a1, a2)] -> [a2]
+inscricoesPorUC :: UC -> [Inscricao] -> [Aluno]
 inscricoesPorUC uc inscricoes = [aluno | (uc', aluno) <- inscricoes, uc' == uc]
 
 imprimeInscricoes :: [UC] -> [Aluno] -> [Inscricao] -> IO ()
@@ -37,6 +37,13 @@ imprimeInscricoes ucs alunos inscricoes = mapM_ imprimeUC ucs
       putStrLn uc
       mapM_ putStrLn alunosUC
       putStrLn ""
+
+main :: IO ()
+main = do
+    ucs <- lerUCs
+    alunos <- lerAlunos
+    inscricoes <- lerInscricoes
+    imprimeInscricoes ucs alunos inscricoes
 
 
 
