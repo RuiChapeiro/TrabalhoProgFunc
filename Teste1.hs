@@ -1,4 +1,3 @@
-module Tarefa1 where
 import System.IO
 
 type UC = String
