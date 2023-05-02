@@ -1,0 +1,4 @@
+1 1 programacao funcional
+2 1 compiladores
+3 2 topicos
+4 3 fisica
