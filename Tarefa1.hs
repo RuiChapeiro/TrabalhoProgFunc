@@ -1,18 +1,15 @@
 module Tarefa1 where
 import System.IO
-import Data.Graph (path)
 
 type UC = String
 type Aluno = String
-type Inscricao = (UC, Aluno)
+type Inscricao = String
 
 lerInscricoes :: IO[Inscricao]
 lerInscricoes = do
     conteudo <- readFile "inscricoes.txt"
-    let inscricoes =  map (fInscricao . words) (lines conteudo)
+    let inscricoes =  lines conteudo
     return inscricoes
-    where 
-        fInscricao [uc, aluno] = (uc, aluno)
 
 lerUCs :: IO[UC]
 lerUCs = do
@@ -26,8 +23,10 @@ lerAlunos = do
     let alunos = lines conteudo
     return alunos
 
-inscricoesPorUC :: UC -> [Inscricao] -> [Aluno]
-inscricoesPorUC uc inscricoes = [aluno | (uc', aluno) <- inscricoes, uc' == uc]
+inscricoesPorUC :: UC -> [Aluno] -> [Inscricoes]
+inscricoesPorUC ucs alunos inscricoes = do
+    if last (words inscricoes) == head (words uc)
+        then let last (inscricoes) = last (words aluno)
 
 imprimeInscricoes :: [UC] -> [Aluno] -> [Inscricao] -> IO ()
 imprimeInscricoes ucs alunos inscricoes = mapM_ imprimeUC ucs
@@ -43,10 +42,4 @@ main = do
     ucs <- lerUCs
     alunos <- lerAlunos
     inscricoes <- lerInscricoes
-    imprimeInscricoes ucs alunos inscricoes
-
-
-
-
-
-
+    inscricoesPorUC ucs alunos inscricoes

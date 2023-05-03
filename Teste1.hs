@@ -1,51 +1,64 @@
+module Teste1 where
+
 import System.IO
+import Data.List (intersperse)
 
 type UC = String
 type Aluno = String
-type Inscricao = (UC, Aluno)
+type Inscricao = String
+type Dados = [(UC, [Aluno])]
 
--- Função que lê as inscrições do arquivo "inscricoes.txt" e retorna uma lista de tuplas (UC, Aluno)
-leInscricoes :: FilePath -> IO [Inscricao]
-leInscricoes path = do
-  conteudo <- readFile path
-  let inscricoes = map (paraInscricao . words) (lines conteudo)
-  return inscricoes
-  where 
-    paraInscricao [uc, aluno] = (uc, aluno)
-    paraInscricao _ = error "Formato inválido de inscrição"
+lerInscricoes :: IO [Inscricao]
+lerInscricoes = do
+    conteudo <- readFile "inscricoes.txt"
+    let inscricoes = lines conteudo
+    return inscricoes
 
--- Função que lê os nomes das UCs do arquivo "ucs.txt" e retorna uma lista de UCs
-leUCs :: FilePath -> IO [UC]
-leUCs path = do
-  conteudo <- readFile path
-  let ucs = lines conteudo
-  return ucs
+lerUCs :: IO [UC]
+lerUCs = do
+    conteudo <- readFile "ucs.txt"
+    let ucs = lines conteudo
+    return ucs
 
--- Função que lê os nomes dos alunos do arquivo "listaalunos.txt" e retorna uma lista de alunos
-leAlunos :: FilePath -> IO [Aluno]
-leAlunos path = do
-  conteudo <- readFile path
-  let alunos = lines conteudo
-  return alunos
+lerAlunos :: IO [Aluno]
+lerAlunos = do
+    conteudo <- readFile "listaAlunos.txt"
+    let alunos = lines conteudo
+    return alunos
 
--- Função que filtra as inscrições para obter apenas aquelas referentes a uma determinada UC
-inscricoesPorUC :: UC -> [Inscricao] -> [Aluno]
-inscricoesPorUC uc inscricoes = [aluno | (uc', aluno) <- inscricoes, uc' == uc]
+lerDados :: IO Dados
+lerDados = do
+    ucs <- lerUCs
+    let numUcs = length ucs
+    inscricoes <- lerInscricoes
+    let numInscricoes = length inscricoes
+    alunos <- lerAlunos
+    let numAlunos = length alunos
+    let tuplas = map words inscricoes
+    let inscricoes' = [(a,b) | [a,b] <- tuplas]
+    let alunos' = [(a,b) | [a,b,_] <- map words alunos]
+    let ucs' = [(a, []) | a <- ucs]
+    let dados = foldr atualizar ucs' inscricoes'
+    return dados
 
--- Função que imprime na tela os alunos inscritos em cada UC
-imprimeInscricoes :: [UC] -> [Aluno] -> [Inscricao] -> IO ()
-imprimeInscricoes ucs alunos inscricoes = mapM_ imprimeUC ucs
-  where
-    imprimeUC uc = do
-      let alunosUC = inscricoesPorUC uc inscricoes
-      putStrLn uc
-      mapM_ putStrLn alunosUC
-      putStrLn ""
+atualizar :: (Inscricao, Aluno) -> Dados -> Dados
+atualizar (inscricao, aluno) dados = map (atualizarUC inscricao aluno) dados
 
--- Função principal que lê os arquivos e imprime as inscrições
+atualizarUC :: Inscricao -> Aluno -> (UC, [Aluno]) -> (UC, [Aluno])
+atualizarUC inscricao aluno (uc, alunos)
+    | inscricao == uc = (uc, aluno:alunos)
+    | otherwise = (uc, alunos)
+
+imprimirDados :: Dados -> IO ()
+imprimirDados dados = mapM_ imprimirUC dados
+
+imprimirUC :: (UC, [Aluno]) -> IO ()
+imprimirUC (uc, alunos) = do
+    putStr uc
+    putStr ": "
+    putStrLn (concat (intersperse ", " alunos))
+
 main :: IO ()
 main = do
-  ucs <- leUCs "ucs.txt"
-  alunos <- leAlunos "listaalunos.txt"
-  inscricoes <- leInscricoes "inscricoes.txt"
-  imprimeInscricoes ucs alunos inscricoes
+    dados <- lerDados
+    imprimirDados dados
