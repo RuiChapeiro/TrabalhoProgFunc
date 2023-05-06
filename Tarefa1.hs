@@ -1,27 +1,29 @@
 module Tarefa1 where
-import System.IO
+import System.IO ()
 
-lerUCs :: IO()
-lerUCs = do
+mainUM :: IO()
+mainUM = do
     ucs <- readFile "ucs.txt"
     inscricoes <- readFile "inscricoes.txt"
-    percucs (lines ucs) inscricoes
+    procuraUCsUM (lines ucs) inscricoes
+    putStrLn "====================\n"
 
-percucs :: [String] -> String -> IO()
-percucs [] _ = putStrLn ("")
-percucs (linha:linhas) inscricoes = do
-                        putStrLn (unwords(tail(tail(words linha))))
-                        percinsc (head(words linha)) (lines inscricoes)
-                        percucs linhas inscricoes
+procuraUCsUM :: [String] -> String -> IO ()
+procuraUCsUM [] _ = putStrLn ""
+procuraUCsUM (linha:linhas) inscricoes = do
+                        putStrLn ("\n====================\n"++unwords(tail(tail(words linha)))++"\n--------------------")
+                        procuraInscricoesUM (head(words linha)) (lines inscricoes)
+                        procuraUCsUM linhas inscricoes
 
-percinsc :: String -> [String] -> IO()
-percinsc _ [] = putStrLn ("")
-percinsc uc (linha:linhas) = if uc == last(words linha) then do alunos <- readFile "listaalunos.txt"
-                                                                percalunos (head(words linha)) (lines alunos)
-                                                                percinsc uc linhas
-                                else percinsc uc linhas
+procuraInscricoesUM :: String -> [String] -> IO()
+procuraInscricoesUM _ [] = putStrLn ""
+procuraInscricoesUM uc (linha:linhas) = if uc == last(words linha) then do alunos <- readFile "listaalunos.txt"
+                                                                           procuraAlunosUM (head(words linha)) (lines alunos)
+                                                                           procuraInscricoesUM uc linhas
+                                else procuraInscricoesUM uc linhas
+                    
 
-percalunos :: String -> [String] -> IO()
-percalunos _ [] = putStrLn ("")
-percalunos al (linha:linhas) = if al == head(words linha) then do putStrLn (unwords(tail(tail(words linha))))
-                                    else percalunos al linhas
+procuraAlunosUM :: String -> [String] -> IO()
+procuraAlunosUM _ [] = putStrLn ""
+procuraAlunosUM al (linha:linhas) = if al == head(words linha) then do putStrLn (unwords(tail(tail(words linha))))
+                                    else procuraAlunosUM al linhas
