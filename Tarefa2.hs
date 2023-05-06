@@ -1,47 +1,27 @@
-module Tarefa2 where
+Rui
+import System.IO ()
 
-import System.IO 
+imptodasuc :: IO()
+imptodasuc = do
+    ucs <- readFile "ucs.txt"
+    inscricoes <- readFile "inscricoes.txt"
+    percucs (lines ucs) inscricoes
 
-type Aluno = String
-type UC = String
+percucs :: [String] -> String -> IO()
+percucs [] _ = putStrLn ("")
+percucs (linha:linhas) inscricoes = do
+                        putStrLn (unwords(tail(tail(words linha))))
+                        percinsc (head(words linha)) (lines inscricoes)
+                        percucs linhas inscricoes
 
-lerAlunos :: IO [Aluno]
-lerAlunos = do
-    conteudo <- readFile "inscricoes.txt"
-    let linhas = lines conteudo
-    return linhas
+percinsc :: String -> [String] -> IO()
+percinsc _ [] = putStrLn ("")
+percinsc uc (linha:linhas) = if uc == last(words linha) then do alunos <- readFile "listaalunos.txt"
+                                                                percalunos (head(words linha)) (lines alunos)
+                                                                percinsc uc linhas
+                                else percinsc uc linhas
 
-lerUCs :: IO [(UC, Aluno)]
-lerUCs = do
-    conteudo <- readFile "ucs.txt"
-    let linhas = lines conteudo
-        tuplas = [ (uc, aluno) | l <- linhas, let (uc:aluno:_) = words l ]
-    return tuplas
-
-
-relacionarAlunosUCs :: [Aluno] -> [(UC, Aluno)] -> [(Aluno, [UC])]
-relacionarAlunosUCs alunos ucs = [(aluno, [uc | (uc, a) <- ucs, a == aluno]) | aluno <- alunos]
-
-lerListaAlunos :: IO [(Aluno, [UC])]
-lerListaAlunos = do
-    alunos <- lerAlunos
-    ucs <- lerUCs
-    let lista = relacionarAlunosUCs alunos ucs
-    return lista
-
-mostrarListaAlunos :: [(Aluno, [UC])] -> IO ()
-mostrarListaAlunos [] = return ()
-mostrarListaAlunos ((aluno, ucs):resto) = do
-    putStr "Aluno: "
-    putStrLn aluno
-    putStr "Unidades Curriculares: "
-    putStrLn (unwords ucs)
-    mostrarListaAlunos resto
-
-
-main :: IO ()
-main = do
-    lista <- lerListaAlunos
-    mostrarListaAlunos lista
-
-
+percalunos :: String -> [String] -> IO()
+percalunos _ [] = putStrLn ("")
+percalunos al (linha:linhas) = if al == head(words linha) then do putStrLn (unwords(tail(tail(words linha))))
+                                    else percalunos al linhas
