@@ -1,0 +1,6 @@
+===============DIA 1===============
+Sala 3 - fisica
+Sala 2 - topicos
+Sala 1 - programacao funcional
+===============DIA 2===============
+Sala 3 - compiladores

@@ -1,0 +1,8 @@
+===============DIA 1===============
+Sala 3: programacao funcional
+Sala 2: topicos
+Sala 1: fisica
+INCOMPATIBILIDADES = 0
+===============DIA 2===============
+Sala 3: compiladores
+INCOMPATIBILIDADES = 0
