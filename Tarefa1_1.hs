@@ -1,4 +1,4 @@
-module Tarefa1 where
+module Tarefa1_1 where
 import System.IO ()
 
 main1 :: IO()
