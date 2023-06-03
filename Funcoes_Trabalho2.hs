@@ -17,14 +17,14 @@ escalonamento1 dias salas (x:xs) = do
 --NAO SEI
 funcTail :: Int -> [String] -> [String]
 funcTail salas [] = []
-funcTail 0 string = string
+funcTail 0 string = string --QUANDO CHEGAR A 0 ACABA
 funcTail salas (x:xs) = do
     funcTail (salas-1) xs
 
 --NAO SEI
 printSalas :: Int -> [String] -> IO()
 printSalas salas [] = return()
-printSalas 0 (x:xs) = return()
+printSalas 0 (x:xs) = return() --QUANDO CHEGAR A 0 ACABA
 printSalas salas (x:xs) = do
     ficheiro <- openFile "Tarefa1.txt" AppendMode
     hPutStrLn ficheiro ("Sala "++ show salas ++ ": "++ unwords (tail (tail(words x))))
@@ -32,7 +32,9 @@ printSalas salas (x:xs) = do
     printSalas (salas-1) xs
 
 
--------------------------------
+----------FUNÇÕES TAREFA 2----------
+
+--NAO SEI
 maiorAno :: [String] -> IO()
 maiorAno [] = return()
 maiorAno (x:xs) = do 
@@ -52,7 +54,8 @@ maiorAno (x:xs) = do
             hClose ficheiro
             maiorAno xs
         else maiorAno xs
-            
+
+--NAO SEI 
 escalonamento2 :: Int -> Int -> Int -> Int -> [String] -> IO() 
 escalonamento2 anoMax dias diasMax salas [] = return()
 escalonamento2 anoMax dias diasMax salas (x:xs) = do
@@ -92,6 +95,7 @@ escalonamento2 anoMax dias diasMax salas (x:xs) = do
                     let maiorAnoInt = read maiorAnoString :: Int -- maior ano no ficheiro
                     escalonamento2 maiorAnoInt (dias+1) diasMax salas (lines suporte2)
 
+--NAO SEI
 finder :: Int -> [String] -> IO()
 finder _ [] = return()
 finder ano (x:xs) = do --ano a encontrar, ficheiro2
@@ -134,7 +138,93 @@ printSalas2 salas (x:xs) = do
     hClose ficheiro
     printSalas2 (salas-1) xs
 
---funcoes tarefa 5
+
+----------FUNÇÕES TAREFA 3----------
+
+remDup :: Eq a => [a] -> [a]
+remDup [] = []
+remDup (x:xs)
+  | x `elem` xs = x : remDup (delete x xs)
+  | otherwise = x : remDup xs
+
+tarefa31 :: IO()
+tarefa31 = do
+    ficheiro <- openFile "Suporte.txt" WriteMode
+    hClose ficheiro
+    conteudoDisciplina <- readFile "ucs.txt"
+    conteudoInscricao <- readFile "inscricoes.txt"
+    conteudoAlunos <- readFile "listaalunos.txt"
+    putStrLn "indique o nome da disciplina"
+    disciplina <- getLine
+    encontrarNome disciplina (lines conteudoDisciplina) (lines conteudoInscricao) (lines conteudoAlunos)
+    putStrLn "indique o nome da outra disciplina"
+    disciplina <- getLine
+    encontrarNome disciplina (lines conteudoDisciplina) (lines conteudoInscricao) (lines conteudoAlunos)
+    
+encontrarNome:: String -> [String] -> [String] -> [String]-> IO() --descobre o numero da disciplina a partir do nome
+encontrarNome x [] y z = return()
+encontrarNome input (linha:linhas) conteudo_insc conteudo_alunos = do
+    let numero = head (words linha)
+    if input == unwords (tail(tail(words linha)))
+        then descobrirAlxxx numero conteudo_insc conteudo_alunos --funcao usada na tarefa 1, com o numero descobre o al
+        else return()
+    encontrarNome input linhas conteudo_insc conteudo_alunos  
+
+descobrirAlxxx:: String -> [String] -> [String]-> IO() --descobre o al a partir do numero da disciplina
+descobrirAlxxx numero [] conteudo_alunos = return()
+descobrirAlxxx numero (linha:linhas) conteudo_alunos = do
+    
+    let numero_al = head (words linha) -- al do aluno
+    if last (words linha) == numero
+        then do 
+            ficheiro <- openFile "Suporte.txt" AppendMode
+            hPutStrLn ficheiro (head (words linha))--tranforma al em nome 
+            hClose ficheiro
+        else return ()
+    descobrirAlxxx numero linhas conteudo_alunos    
+
+
+----------FUNÇÕES TAREFA 4----------
+escalonamento4 :: [String]-> [String]-> [String]->Int -> Int -> [String] -> IO() 
+escalonamento4 disciplina inscricao alunos dias salas [] = return()
+escalonamento4 disciplina inscricao alunos dias salas (x:xs) = do
+
+    ficheiro <- openFile "Suporte.txt" WriteMode
+    hClose ficheiro
+
+    ficheiro <- openFile "Tarefa1.txt" AppendMode
+    hPutStrLn ficheiro ("--- dia "++ show dias ++ "---")
+    hClose ficheiro
+
+    printSalas4 disciplina inscricao alunos salas (x:xs)
+
+    ficheiroSuporte <- readFile "Suporte.txt"
+    let tamanhoInicial = length (lines ficheiroSuporte) 
+    let tamanhoFinal = length (remDup(lines ficheiroSuporte)) 
+    let incompativeis = tamanhoInicial - tamanhoFinal
+
+    ficheiro <- openFile "Tarefa1.txt" AppendMode
+    hPutStrLn ficheiro ("Numero de imcompatibilidades: " ++ show incompativeis)
+    hClose ficheiro
+    
+    escalonamento4 disciplina inscricao alunos (dias+1) salas (funcTail salas (x:xs))
+  
+printSalas4 :: [String]-> [String]-> [String]-> Int -> [String] -> IO()
+printSalas4 disciplina inscricao alunos salas [] = return()
+printSalas4 disciplina inscricao alunos 0 (x:xs) = return()
+printSalas4 disciplina inscricao alunos salas (x:xs) = do
+
+    let disciplinas = unwords (tail (tail(words x)))
+
+    ficheiro <- openFile "Tarefa1.txt" AppendMode
+    hPutStrLn ficheiro ("Sala "++ show salas ++ ": "++ disciplinas)
+    hClose ficheiro
+
+    encontrarNome disciplinas disciplina inscricao alunos
+    printSalas4 disciplina inscricao alunos (salas-1) xs
+
+
+----------FUNÇÕES TAREFA 5----------
 copyFile :: [String] -> IO()
 copyFile [] = return()
 copyFile (x:xs)= do 
@@ -304,7 +394,7 @@ printSalas5 disciplina inscricao alunos salas (x:xs) = do
     printSalas5 disciplina inscricao alunos (salas-1) xs
 
     
---funcoes tarefa6
+----------FUNÇÕES TAREFA 6----------
 
 formatacao6 :: [String]->[String]->[String]->[String]->IO()
 formatacao6 disciplina inscricao alunos [] = return()
@@ -404,87 +494,4 @@ escreverFicheiro (x:xs)= do
             hPutStrLn ficheiro2 x
             hClose ficheiro2 
             escreverFicheiro xs
-    
----funcoes tarefa4---
-escalonamento4 :: [String]-> [String]-> [String]->Int -> Int -> [String] -> IO() 
-escalonamento4 disciplina inscricao alunos dias salas [] = return()
-escalonamento4 disciplina inscricao alunos dias salas (x:xs) = do
-
-    ficheiro <- openFile "Suporte.txt" WriteMode
-    hClose ficheiro
-
-    ficheiro <- openFile "Tarefa1.txt" AppendMode
-    hPutStrLn ficheiro ("--- dia "++ show dias ++ "---")
-    hClose ficheiro
-
-    printSalas4 disciplina inscricao alunos salas (x:xs)
-
-    ficheiroSuporte <- readFile "Suporte.txt"
-    let tamanhoInicial = length (lines ficheiroSuporte) 
-    let tamanhoFinal = length (remDup(lines ficheiroSuporte)) 
-    let incompativeis = tamanhoInicial - tamanhoFinal
-
-    ficheiro <- openFile "Tarefa1.txt" AppendMode
-    hPutStrLn ficheiro ("Numero de imcompatibilidades: " ++ show incompativeis)
-    hClose ficheiro
-    
-    escalonamento4 disciplina inscricao alunos (dias+1) salas (funcTail salas (x:xs))
-  
-printSalas4 :: [String]-> [String]-> [String]-> Int -> [String] -> IO()
-printSalas4 disciplina inscricao alunos salas [] = return()
-printSalas4 disciplina inscricao alunos 0 (x:xs) = return()
-printSalas4 disciplina inscricao alunos salas (x:xs) = do
-
-    let disciplinas = unwords (tail (tail(words x)))
-
-    ficheiro <- openFile "Tarefa1.txt" AppendMode
-    hPutStrLn ficheiro ("Sala "++ show salas ++ ": "++ disciplinas)
-    hClose ficheiro
-
-    encontrarNome disciplinas disciplina inscricao alunos
-    printSalas4 disciplina inscricao alunos (salas-1) xs
-
---Funcoes tarefa 3--
-
-remDup :: Eq a => [a] -> [a]
-remDup [] = []
-remDup (x:xs)
-  | x `elem` xs = x : remDup (delete x xs)
-  | otherwise = x : remDup xs
-
-tarefa31 :: IO()
-tarefa31 = do
-    ficheiro <- openFile "Suporte.txt" WriteMode
-    hClose ficheiro
-    conteudoDisciplina <- readFile "ucs.txt"
-    conteudoInscricao <- readFile "inscricoes.txt"
-    conteudoAlunos <- readFile "listaalunos.txt"
-    putStrLn "indique o nome da disciplina"
-    disciplina <- getLine
-    encontrarNome disciplina (lines conteudoDisciplina) (lines conteudoInscricao) (lines conteudoAlunos)
-    putStrLn "indique o nome da outra disciplina"
-    disciplina <- getLine
-    encontrarNome disciplina (lines conteudoDisciplina) (lines conteudoInscricao) (lines conteudoAlunos)
-    
-encontrarNome:: String -> [String] -> [String] -> [String]-> IO() --descobre o numero da disciplina a partir do nome
-encontrarNome x [] y z = return()
-encontrarNome input (linha:linhas) conteudo_insc conteudo_alunos = do
-    let numero = head (words linha)
-    if input == unwords (tail(tail(words linha)))
-        then descobrirAlxxx numero conteudo_insc conteudo_alunos --funcao usada na tarefa 1, com o numero descobre o al
-        else return()
-    encontrarNome input linhas conteudo_insc conteudo_alunos  
-
-descobrirAlxxx:: String -> [String] -> [String]-> IO() --descobre o al a partir do numero da disciplina
-descobrirAlxxx numero [] conteudo_alunos = return()
-descobrirAlxxx numero (linha:linhas) conteudo_alunos = do
-    
-    let numero_al = head (words linha) -- al do aluno
-    if last (words linha) == numero
-        then do 
-            ficheiro <- openFile "Suporte.txt" AppendMode
-            hPutStrLn ficheiro (head (words linha))--tranforma al em nome 
-            hClose ficheiro
-        else return ()
-    descobrirAlxxx numero linhas conteudo_alunos    
     

@@ -1,6 +1,0 @@
---- dia 1---
-Sala 2: programacao funcional
-Sala 1: compiladores
---- dia 2---
-Sala 2: topicos
-Sala 1: fisica

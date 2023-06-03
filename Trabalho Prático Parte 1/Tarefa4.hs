@@ -1,6 +1,6 @@
-module Tarefa1_4 where
+module Tarefa4 where
 import System.IO ()
-import Tarefa1_2
+import Tarefa2
 
 main4 :: IO()
 main4 = do inscricoes <- readFile "inscricoes.txt"
@@ -9,15 +9,15 @@ main4 = do inscricoes <- readFile "inscricoes.txt"
            putStrLn "--------------------"
            if aluno == "1" then do 
                 let al = "al001"
-                Tarefa1_2.procuraInscricoes2 al (lines inscricoes)
+                Tarefa2.procuraInscricoes2 al (lines inscricoes)
            else if aluno == "2" then do
                 let al = "al002"
-                Tarefa1_2.procuraInscricoes2 al (lines inscricoes)
+                Tarefa2.procuraInscricoes2 al (lines inscricoes)
            else if aluno == "3" then do
                 let al = "al003"
-                Tarefa1_2.procuraInscricoes2 al (lines inscricoes)
+                Tarefa2.procuraInscricoes2 al (lines inscricoes)
            else if aluno == "4" then do
                 let al = "al004"
-                Tarefa1_2.procuraInscricoes2 al (lines inscricoes)
+                Tarefa2.procuraInscricoes2 al (lines inscricoes)
            else putStrLn "Aluno Inválido"
            putStrLn "--------------------"

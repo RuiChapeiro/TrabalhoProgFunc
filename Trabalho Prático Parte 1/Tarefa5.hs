@@ -1,9 +1,9 @@
-module Tarefa1_5 where
+module Tarefa5 where
 import System.IO
-import Tarefa1_1
-import Tarefa1_2
-import Tarefa1_3
-import Tarefa1_4
+import Tarefa1
+import Tarefa2
+import Tarefa3
+import Tarefa4
 
 --Função principal, usada para mostar ao utilizador uma interface do menu
 menu :: IO ()
@@ -16,22 +16,22 @@ menu = do
 escolheOpcao :: String -> IO ()
 escolheOpcao opcao
             | opcao == "1" = do
-                            Tarefa1_1.main1
+                            Tarefa1.main1
                             putStr "PRESSIONE QUALQUER TECLA PARA CONTINUAR..."
                             _ <- getLine
                             menu
             | opcao == "2" = do
-                            Tarefa1_2.main2
+                            Tarefa2.main2
                             putStr "PRESSIONE QUALQUER TECLA PARA CONTINUAR..."
                             _ <- getLine
                             menu
             | opcao == "3" = do
-                            Tarefa1_3.main3
+                            Tarefa3.main3
                             putStr "PRESSIONE QUALQUER TECLA PARA CONTINUAR..."
                             _ <- getLine
                             menu
             | opcao == "4" = do
-                            Tarefa1_4.main4
+                            Tarefa4.main4
                             putStr "PRESSIONE QUALQUER TECLA PARA CONTINUAR..."
                             _ <- getLine
                             menu
